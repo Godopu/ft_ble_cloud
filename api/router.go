@@ -2,9 +2,12 @@ package api
 
 import (
 	"encoding/json"
+	"ftblecloud/config"
 	"log"
+	"math/rand"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,9 +33,11 @@ func createRouter() *gin.Engine {
 				panic(err)
 			}
 
-			log.Println("storing and expecting EMG")
+			log.Println("Storing and analysing EMG", body["emg"])
 
-			c.JSON(http.StatusOK, map[string]interface{}{"computing_delay": 200})
+			computingDelay := rand.Intn(50) + config.Params["computing_delay"].(int)
+			time.Sleep(time.Millisecond * time.Duration(computingDelay))
+			c.JSON(http.StatusOK, map[string]interface{}{"computing_delay": computingDelay})
 		})
 
 		apiGroup.GET("/test", func(c *gin.Context) {
